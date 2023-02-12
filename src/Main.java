@@ -18,11 +18,12 @@ public class Main {
         Set<Notebook> notebooks = newSet();
         Scanner scanner = new Scanner(System.in);
 
-        List<String> parametersInteger = Arrays.asList("2", "3", "6");
+        List<String> parametersInteger = Arrays.asList("2", "3", "6", "0");
         List<String> parametersString = Arrays.asList("1", "4", "5");
         Map<String, String> filter = new HashMap<String, String>();
 
         printNotebooks(notebooks, filter);
+        System.out.println();
         while (true) {
             System.out.println("Введите цифру, соответствующую необходимому параметру:");
             System.out.println("1 - Производитель");
@@ -31,31 +32,33 @@ public class Main {
             System.out.println("4 - Операционная система");
             System.out.println("5 - Цвет");
             System.out.println("6 - Минимальный размер экрана (дюйм)");
-            System.out.println("0 - Сброс");
+            System.out.println("0 - Сброс параметров");
             System.out.println("-1 - Выход");
             System.out.print("Номер параметра: ");
 
             String key = scanner.nextLine();
-            if (key != null) key = key.trim(); else continue;
+            if (key != null) key = key.trim();
+            else continue;
             if (key.equalsIgnoreCase("-1")) break;
             if (key.equalsIgnoreCase("0")) {
                 filter.clear();
+                System.out.println("Фильтр сброшен");
                 printNotebooks(notebooks, filter);
             }
             if (parametersInteger.contains(key) || parametersString.contains(key)) {
                 System.out.print("Значение параметра: ");
                 String value = scanner.nextLine();
-                if (value != null) value = value.trim(); else continue;
+                if (value != null) value = value.trim();
+                else continue;
 
                 if (value.equals("")) {
                     filter.put(key, value);
                 } else {
-                    //
                     if (parametersString.contains(key)) {
                         filter.put(key, value);
                     } else {
                         try {
-                            Integer i = Integer.parseInt(value);
+                            Integer.parseInt(value);
                             filter.put(key, value);
                         } catch (NumberFormatException e) {
                             System.out.println();
@@ -64,7 +67,7 @@ public class Main {
                         }
                     }
                 }
-                //
+                System.out.print("Установлены фильтра по параметрам: " + filter);
                 printNotebooks(notebooks, filter);
             } else {
                 System.out.println();
@@ -72,11 +75,12 @@ public class Main {
             }
         }
     }
+
     public static Set<Notebook> newSet() {
         Notebook note1 = new Notebook(111, "Lenovo", 4, 512, "Windows", "Черный", 15);
         Notebook note2 = new Notebook(222, "Samsung", 8, 256, "Linux", "Серый", 13);
-        Notebook note3 = new Notebook(333, "HP", 16, 1024, null, "Белый", 17);
-        Notebook note4 = new Notebook(444, "Lenovo", 8, 512, "Windoes", "Серый", 13);
+        Notebook note3 = new Notebook(333, "HP", 16, 1024, "Linux", "Белый", 17);
+        Notebook note4 = new Notebook(444, "Lenovo", 8, 512, "Windows", "Серый", 13);
         Notebook note5 = new Notebook(555, "Macbook", 16, 512, "MacOS", "Белый", 12);
         Set<Notebook> set = new HashSet<>();
         set.add(note1);
@@ -86,10 +90,11 @@ public class Main {
         set.add(note5);
         return set;
     }
+
     private static void printNotebooks(Set<Notebook> notebooks, Map<String, String> filter) {
         List<String> forPrint = new ArrayList<String>();
-        for (Notebook n: notebooks) {
-            if (filter(n, filter)) {
+        for (Notebook n : notebooks) {
+            if (filterRun(n, filter)) {
                 String s = String.format("S/N: %d, название: %s, ОЗУ(Гб):%s, диск(Гб): %d, ОС: %s, " +
                                 "цвет: %s, экран(дюйм): %d",
                         n.getSN(),
@@ -106,14 +111,15 @@ public class Main {
 
         System.out.println();
         System.out.println(String.format("Ноутбуки. Результат (%d из %d)", forPrint.size(), notebooks.size()));
-        for (String s: forPrint) {
+        for (String s : forPrint) {
             System.out.println(s);
         }
     }
-    private static boolean filter(Notebook n, Map<String, String> filter) {
+
+    private static boolean filterRun(Notebook n, Map<String, String> filter) {
         boolean result = true;
 
-        for (String key: filter.keySet()) {
+        for (String key : filter.keySet()) {
             String value = filter.get(key);
             if (value == null || value.trim().equals("")) continue;
             if (key.equals("1")) {
@@ -161,7 +167,7 @@ public class Main {
             } else if (key.equals("6")) {
                 try {
                     int i = Integer.parseInt(value);
-                    if (n.getSSD() >= i) {
+                    if (n.getSize() >= i) {
                     } else {
                         result = false;
                         break;
